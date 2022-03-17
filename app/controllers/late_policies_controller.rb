@@ -28,10 +28,10 @@ class LatePoliciesController < ApplicationController
   end
 
   def new
-    @late_policy = LatePolicy.new
+    @penalty_policy = LatePolicy.new
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render xml: @late_policy }
+      format.xml  { render xml: @penalty_policy }
     end
   end
 
@@ -43,6 +43,7 @@ class LatePoliciesController < ApplicationController
     validPenalty = true
 
     # penalty per unit cannot be greater than maximum penalty
+
     invalid_penalty_per_unit = params[:late_policy][:max_penalty].to_i < params[:late_policy][:penalty_per_unit].to_i
     if invalid_penalty_per_unit
       flash[:error] = 'The maximum penalty cannot be less than penalty per unit.'
@@ -55,7 +56,7 @@ class LatePoliciesController < ApplicationController
     end
 
     # maximum penalty cannot be greater than equal to 100
-    if params[:late_policy][:max_penalty].to_i >= 100
+    if params[:penalty_policy][:max_penalty].to_i >= 100
       flash[:error] = 'Maximum penalty cannot be greater than or equal to 100'
       validPenalty = false
     end
@@ -65,7 +66,7 @@ class LatePoliciesController < ApplicationController
       @late_policy = LatePolicy.new(late_policy_params)
       @late_policy.instructor_id = instructor_id
       begin
-        @late_policy.save!
+        @penalty_policy.save!
         flash[:notice] = 'The late policy was successfully created.'
         redirect_to action: 'index'
       rescue StandardError
