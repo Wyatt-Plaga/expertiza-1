@@ -40,13 +40,12 @@ class LatePoliciesController < ApplicationController
   end
 
   def create
-    validPenalty, error_message = validate_input
+    valid_penalty, error_message = validate_input
     if error_message
         flash[:error] = error_message
     end
 
-    # if the late policy does not violate any of the above conditions, the policy is created
-    if validPenalty
+    if valid_penalty
       @late_policy = LatePolicy.new(late_policy_params)
       @late_policy.instructor_id = instructor_id
       begin
@@ -70,7 +69,7 @@ class LatePoliciesController < ApplicationController
       # message. TODO: need to check this is not breaking any tests.
     penalty_policy = LatePolicy.find(params[:id])
 
-    validPenalty, error_message = validate_input
+    valid_penalty, error_message = validate_input
     if error_message
       flash[:error] = error_message
       redirect_to action: 'edit', id: params[:id]
@@ -116,30 +115,28 @@ class LatePoliciesController < ApplicationController
   def validate_input 
     # Validates input for create and update forms
 
-    validPenalty = true
+    valid_penalty = true
     error_message = nil
 
     max_penalty = params[:late_policy][:max_penalty].to_i
-    # penalty per unit cannot be greater than maximum penalty
+
     invalid_penalty_per_unit = max_penalty < params[:late_policy][:penalty_per_unit].to_i
     if invalid_penalty_per_unit
       error_message = 'The maximum penalty cannot be less than penalty per unit.'
-      validPenalty = false
+      valid_penalty = false
     end
 
-    # penalty name should be unique
     if LatePolicy.check_policy_with_same_name(params[:late_policy][:policy_name], instructor_id)
       error_message = 'A policy with the same name already exists.'
-      validPenalty = false
+      valid_penalty = false
     end
 
-    # maximum penalty cannot be greater than equal to 100
     if max_penalty >= 100
       error_message = 'Maximum penalty cannot be greater than or equal to 100'
-      validPenalty = false
+      valid_penalty = false
     end
 
-    return validPenalty, error_message
+    return valid_penalty, error_message
   end
 
 end
