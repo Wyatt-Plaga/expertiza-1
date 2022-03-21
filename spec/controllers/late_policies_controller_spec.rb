@@ -151,7 +151,7 @@ describe LatePoliciesController do
           }
         }
         post :create, params
-        expect(flash[:error]).to eq('A policy with the same name already exists.')
+        expect(flash[:error]).to eq('A policy with the same name Policy1 already exists.')
       end
     end
 

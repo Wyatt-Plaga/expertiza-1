@@ -114,6 +114,8 @@ class LatePoliciesController < ApplicationController
 
   def duplicate_name_check(is_update=false)
     should_check = true
+    prefix = is_update ? "Cannot edit the policy. " : ""
+
     if is_update
         existing_late_policy = LatePolicy.find(params[:id])
         if existing_late_policy.policy_name == params[:late_policy][:policy_name]
@@ -123,7 +125,7 @@ class LatePoliciesController < ApplicationController
 
     if should_check 
       if LatePolicy.check_policy_with_same_name(params[:late_policy][:policy_name], instructor_id)
-          error_message = 'A policy with the same name `' + params[:late_policy][:policy_name] + '` already exists.'
+          error_message = prefix + 'A policy with the same name ' + params[:late_policy][:policy_name] + ' already exists.'
           valid_penalty = false
       end
     end
@@ -134,19 +136,24 @@ class LatePoliciesController < ApplicationController
   def validate_input(is_update=false)
     # Validates input for create and update forms
     max_penalty = params[:late_policy][:max_penalty].to_i
-    invalid_penalty_per_unit = max_penalty < params[:late_policy][:penalty_per_unit].to_i
+    penalty_per_unit = params[:late_policy][:penalty_per_unit].to_i
 
     valid_penalty, error_message = true, nil
     valid_penalty, error_message = duplicate_name_check(is_update)
+    prefix = is_update ? "Cannot edit the policy. " : ""
 
-    if invalid_penalty_per_unit
-      error_message = 'The maximum penalty cannot be less than penalty per unit.'
+    if max_penalty < penalty_per_unit 
+      error_message = prefix + 'The maximum penalty cannot be less than penalty per unit.'
       valid_penalty = false
     end
 
+    if penalty_per_unit < 0
+      error_message = 'Penalty per unit cannot be negative.' 
+      valid_penalty = false
+    end
 
     if max_penalty >= 100
-      error_message = 'Maximum penalty cannot be greater than or equal to 100'
+      error_message = prefix + 'Maximum penalty cannot be greater than or equal to 100'
       valid_penalty = false
     end
 
