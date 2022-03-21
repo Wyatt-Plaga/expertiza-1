@@ -12,7 +12,7 @@ class LatePoliciesController < ApplicationController
   end
 
   def index
-    @penalty_policies = LatePolicy.all
+    @penalty_policies = LatePolicy.where(['instructor_id = ? OR private = 0', instructor_id])
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render xml: @penalty_policies }
