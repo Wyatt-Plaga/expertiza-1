@@ -133,7 +133,7 @@ describe LatePoliciesController do
           }
         }
         post :create, params
-        expect(flash[:error]).to eq('The following error occurred while saving the late policy: ')
+        expect(flash[:error]).to eq('Penalty per unit cannot be negative.')
       end
     end
 
