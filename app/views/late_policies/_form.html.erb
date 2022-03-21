@@ -14,7 +14,7 @@
 
 <p>
 <label for="private">Visibility:</label><label style="color: #ff0000;">*</label><br/>
-<% @units= [ ["Private", 1], ["Public", 0]]%>
+<% @units= [ ["Private", true], ["Public", false]]%>
 <%= f.select("private",@units,:selected=>@penalty_policy[:private]) %>
 </p>
 
