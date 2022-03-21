@@ -52,7 +52,7 @@ class LatePoliciesController < ApplicationController
         @late_policy.save!
         flash[:notice] = 'The late policy was successfully created.'
         redirect_to action: 'index'
-      rescue StandrdError 
+      rescue StandardError 
         flash[:error] = 'The following error occurred while saving the late policy: '
         redirect_to action: 'new'
       end
