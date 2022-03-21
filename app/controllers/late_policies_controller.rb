@@ -62,11 +62,6 @@ class LatePoliciesController < ApplicationController
   end
 
   def update
-      # NOTE: While we consolidated the input validation for create and update,
-      # there were some difference in error messages that was lost.
-      # error message from this function would contain "cannot edit the policy"
-      # and duplicate name error would return the duplicate name in the error
-      # message. TODO: need to check this is not breaking any tests.
     penalty_policy = LatePolicy.find(params[:id])
 
     valid_penalty, error_message = validate_input(is_update=true)
